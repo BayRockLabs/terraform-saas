@@ -1,4 +1,4 @@
-resource_group_name     = "tfResourceGroup1"
+resource_group_name     = "c2c-demo"
 location                = "East US"
 acr_name                = "c2cacr"
 acr_resource_group_name = "c2c-demo"
