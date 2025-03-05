@@ -1,7 +1,7 @@
 resource "azurerm_key_vault_secret" "acr_password" {
   name         = "acr-admin-password"
   value        = data.azurerm_container_registry.acr.admin_password
-  key_vault_id = "budgeto-vault"
+  key_vault_id = "/subscriptions/4262cbc1-95ba-4586-943d-7570b5952c3b/resourceGroups/c2c-demo/providers/Microsoft.KeyVault/vaults/budgeto-vault"
 }
 resource "azurerm_container_app" "backend_containerapp" {
   for_each = { for app in var.container_apps : app.name => app }
