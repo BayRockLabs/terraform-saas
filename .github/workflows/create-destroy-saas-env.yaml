@@ -36,6 +36,7 @@ jobs:
       run: |
         terraform init \
           -backend-config="storage_account_name=tfstatebrl" \
+          -backend-config="resource_group_name=devops-tools" \
           -backend-config="container_name=tfstate" \
           -backend-config="key=${{ github.event.inputs.tf_state_key }}-saas.tfstate"
     - name: Terraform Plan
