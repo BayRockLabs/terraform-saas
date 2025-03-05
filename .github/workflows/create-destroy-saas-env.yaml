@@ -25,12 +25,11 @@ jobs:
 
     steps:
     # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Decode and write terraform.tfvars
       run: |
         echo "${{ secrets.TFVARS_B64 }}" | base64 --decode > terraform.tfvars
-    - name: Checkout
-      uses: actions/checkout@v2
-            
     - uses: hashicorp/setup-terraform@v2
     - name: Initialize Terraform with backend config
       run: |
