@@ -9,7 +9,7 @@ resource "azurerm_container_app" "backend_containerapp" {
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = "acr-password"
+    password_secret_name = var.acr_admin_password
   }
 
   template {
@@ -50,7 +50,7 @@ resource "azurerm_container_app" "frontend_containerapp" {
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = "acr-password"
+    password_secret_name = var.acr_admin_password
   }
 
   template {
