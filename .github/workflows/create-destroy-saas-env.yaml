@@ -1,0 +1,45 @@
+name: 'Terraform Dev'
+
+on:
+  workflow_dispatch:
+     inputs:
+      tf_state_key:
+        description: "Terraform State File Key"
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    runs-on: ubuntu-latest
+    environment: development
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Decode and write terraform.tfvars
+      run: |
+        echo "${{ secrets.TFVARS_B64 }}" | base64 --decode > terraform.tfvars
+    - name: Checkout
+      uses: actions/checkout@v2
+            
+    - uses: hashicorp/setup-terraform@v2
+    - name: Initialize Terraform with backend config
+      run: |
+        terraform init \
+          -backend-config="storage_account_name=tfstatebrl" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=${{ github.event.inputs.tf_state_key }}-saas.tfstate"
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -var-file terraform.tfvars
+      continue-on-error: false
+      
