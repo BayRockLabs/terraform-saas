@@ -50,7 +50,7 @@ resource "azurerm_container_app" "frontend_containerapp" {
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = var.acr_admin_password
+    password_secret_name = data.azurerm_container_registry.acr.admin_password
   }
 
   template {
