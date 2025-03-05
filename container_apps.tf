@@ -5,11 +5,19 @@ resource "azurerm_container_app" "backend_containerapp" {
   container_app_environment_id = data.azurerm_container_app_environment.main.id
   resource_group_name          = data.azurerm_resource_group.main.name
   revision_mode                = "Single"
+  secret {
+    name  = "acr-username"
+    value = var.acr_admin_username
+  }
 
+  secret {
+    name  = "acr-password"
+    value = var.acr_admin_password
+  }
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = var.acr_admin_username
+    password_secret_name = "acr-password"
   }
 
   template {
@@ -47,10 +55,20 @@ resource "azurerm_container_app" "frontend_containerapp" {
   resource_group_name          = data.azurerm_resource_group.main.name
   revision_mode                = "Single"
 
+  secret {
+    name  = "acr-username"
+    value = var.acr_admin_username
+  }
+
+  secret {
+    name  = "acr-password"
+    value = var.acr_admin_password
+  }
+
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = var.acr_admin_username
+    password_secret_name = "acr-password"
   }
 
   template {
