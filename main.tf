@@ -5,9 +5,8 @@ terraform {
       version = "~> 3.0"
     }
   }
-#   backend "azurerm" {
-#     # Define remote state configuration if needed
-#   }
+   backend "azurerm" {
+   }
 }
 
 provider "azurerm" {

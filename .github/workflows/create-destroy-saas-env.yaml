@@ -1,10 +1,12 @@
 name: 'Terraform Dev'
 
 on:
-  push:
-    branches:
-    - main
-    
+  workflow_dispatch:
+     inputs:
+      tf_state_key:
+        description: "Terraform State File Key"
+        required: true
+        type: string
 
 jobs:
   terraform:
@@ -23,19 +25,21 @@ jobs:
 
     steps:
     # Checkout the repository to the GitHub Actions runner
+    - name: Decode and write terraform.tfvars
+      run: |
+        echo "${{ secrets.TFVARS_B64 }}" | base64 --decode > terraform.tfvars
     - name: Checkout
       uses: actions/checkout@v2
             
     - uses: hashicorp/setup-terraform@v2
-    - name: Terraform Init
-      id: init
-      run: terraform init
+    - name: Initialize Terraform with backend config
+      run: |
+        terraform init \
+          -backend-config="storage_account_name=tfstatebrl" \
+          -backend-config="container_name=tfstate" \
+          -backend-config="key=${{ github.event.inputs.tf_state_key }}-saas.tfstate"
     - name: Terraform Plan
       id: plan
-      run: terraform plan -var="environment=dev"
+      run: terraform plan -var-file terraform.tfvars
       continue-on-error: false
       
-    - name: Terraform Apply
-      id: apply
-      run: terraform apply -auto-approve -var="environment=dev"
-    
