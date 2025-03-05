@@ -1,3 +1,8 @@
+resource "azurerm_key_vault_secret" "acr_password" {
+  name         = "acr-admin-password"
+  value        = data.azurerm_container_registry.acr.admin_password
+  key_vault_id = "budgeto-vault"
+}
 resource "azurerm_container_app" "backend_containerapp" {
   for_each = { for app in var.container_apps : app.name => app }
 
@@ -9,7 +14,7 @@ resource "azurerm_container_app" "backend_containerapp" {
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = var.acr_admin_password
+    password_secret_name = azurerm_key_vault_secret.acr_password.name
   }
 
   template {
@@ -50,7 +55,7 @@ resource "azurerm_container_app" "frontend_containerapp" {
   registry {
     server               = var.acr_login_server
     username             = var.acr_admin_username
-    password_secret_name = data.azurerm_container_registry.acr.admin_password
+    password_secret_name = azurerm_key_vault_secret.acr_password.name
   }
 
   template {
