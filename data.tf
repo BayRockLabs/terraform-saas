@@ -15,3 +15,7 @@ data "azurerm_container_registry" "acr" {
   name                = var.acr_name
   resource_group_name = var.acr_resource_group_name
 }
+data "azurerm_key_vault_secret" "acr-admin-password" {
+  name         = "acr-admin-password"
+  key_vault_id = "/subscriptions/4262cbc1-95ba-4586-943d-7570b5952c3b/resourceGroups/c2c-demo/providers/Microsoft.KeyVault/vaults/budgeto-vault"
+}
