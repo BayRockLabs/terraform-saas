@@ -3,6 +3,13 @@ name: 'Terraform Dev'
 on:
   workflow_dispatch:
      inputs:
+      action:
+        description: "Select Terraform Action"
+        required: true
+        type: choice
+        options:
+          - apply
+          - destroy
       tf_state_key:
         description: "Terraform State File Key"
         required: true
@@ -43,3 +50,10 @@ jobs:
       run: terraform plan -var-file terraform.tfvars
       continue-on-error: false
       
+    - name: Terraform Apply
+      if: ${{ github.event.inputs.action == 'apply' }}
+      run: terraform apply -auto-approve
+
+    - name: Terraform Destroy
+      if: ${{ github.event.inputs.action == 'destroy' }}
+      run: terraform destroy -auto-approve
